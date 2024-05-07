@@ -9,8 +9,9 @@ use tokio_websockets::{Message, ServerBuilder, WebSocketStream};
 async fn handle_connection(
     addr: SocketAddr,
     mut ws_stream: WebSocketStream<TcpStream>,
-    bcast_tx: Sender<String>,
+    bcast_tx: Sender<(String, String)>,
 ) -> Result<(), Box<dyn Error + Send + Sync>> {
+    let sender_info = format!("{}:{}", addr.ip(), addr.port());
 
     ws_stream
         .send(Message::text("Welcome to chat! Type a message".to_string()))
@@ -27,7 +28,7 @@ async fn handle_connection(
                     Some(Ok(msg)) => {
                         if let Some(text) = msg.as_text() {
                             println!("From Hafiz's Computer {addr:?} {text:?}");
-                            bcast_tx.send(text.into())?;
+                            bcast_tx.send((sender_info.clone(), text.into()))?;
                         }
                     }
                     Some(Err(err)) => return Err(err.into()),
@@ -35,7 +36,7 @@ async fn handle_connection(
                 }
             }
             msg = bcast_rx.recv() => {
-                ws_stream.send(Message::text(msg?)).await?;
+                ws_stream.send(Message::text(format!("{:?}", msg?))).await?;
             }
         }
     }

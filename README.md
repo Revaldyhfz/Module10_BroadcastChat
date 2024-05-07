@@ -2,7 +2,7 @@
 
 ## BroadcastChat
 
-### Experiment 1.2: Understanding how it works.
+### Experiment 2.1: Original code, and how it run
 ![Experiment 2.1](./static/fixed2.1.jpg)
 
 to run both server and client:
@@ -17,7 +17,7 @@ cargo run --bin client
 
 After running both server and clients, and sending messages from each client, i noticed that the server will send back message to all current connected clients.
 
-### Experiment 1.2: Understanding how it works.
+### Experiment 2.2: Modifying port
 
 To modify the port to 8080 and ensure proper functionality, we need to update both the server and client code. Since they communicate over WebSocket protocol, both sides must use the same port.
 
@@ -32,3 +32,9 @@ Here's the approach to modify the port:
 Since both the server and client use WebSocket protocol, it's crucial to ensure they use the same port for proper communication.
 
 The WebSocket protocol is specified and made available through the tokio_websockets crate. This crate provides essential features like ClientBuilder, used to establish connections from the client side, and Message, employed for exchanging messages between the server and client. These functionalities are utilized in both the server and client implementations.
+
+### Experiment 2.3: Small changes, add IP and Port
+
+![Experiment 2.3](./static/2.3.jpg)
+
+Modified the server to extract sender's IP and port from the connection's SocketAddr. Integrated this information into the welcome message upon client connection and broadcasted messages.
